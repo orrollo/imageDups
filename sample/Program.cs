@@ -39,15 +39,15 @@ namespace sample
 
 		static void Main(string[] args)
 		{
-			var size = 64;
+			var size = 128;
 			var dct = new DCT(size);
 
-			var src = new Bitmap("121909_DSCF4447.JPG");
+            var src = new Bitmap("20171023214635.jpg");
 			var tmp = ResizeImage(src, size, size);
 
 			tmp.Save("v000.jpg", ImageFormat.Jpeg);
 
-			var data = dct.Process(tmp);
+			DoubleMatrix[] data = dct.Process(tmp);
 
 			var ret = dct.UnProcess(data);
 			ret.Save("v001.jpg", ImageFormat.Jpeg);
@@ -56,11 +56,14 @@ namespace sample
 			for (int i = 0; i < 3; i++)
 			{
 				simple[i] = (DoubleMatrix)data[i].Clone();
-				ClearDCT(simple[i], 32);
+				ClearDCT(simple[i], 16);
 			}
 
-			var smp = dct.UnProcess(simple);
-			smp.Save("v002.jpg", ImageFormat.Jpeg);
+		    var vecs = simple.Select(x => x.ToVector(0, 0, 16, 16)).ToArray();
+
+
+            var smp = dct.UnProcess(simple);
+            smp.Save("v002.jpg", ImageFormat.Jpeg);
 		}
 
 		private static void ClearDCT(DoubleMatrix src, int start)
